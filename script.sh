@@ -59,18 +59,19 @@ done
 cp /var/lib/flatpak/app/com.stremio.Stremio/current/active/export/share/applications/com.stremio.Stremio.desktop ~/.local/share/applications
 sed -i "s/Icon=com.stremio.Stremio/Icon=stremio/g" ~/.local/share/applications/com.stremio.Stremio.desktop
 
-## add gtk and shell themes ##
-cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker Flat-Remix-GTK/Flat-Remix-Blue-Dark-fullPanel ~/.themes
-gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-GTK-Blue-Darker"
-gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-Blue-Dark-fullPanel"
-rm -r Flat-Remix-GTK flat-remix-gnome
-
 ## add gnome extensions ##
 unzip -j Extension_bundles.zip zip-files/user-theme@gnome-shell-extensions.gcampax.github.com.shell-extension.zip
 unzip user-theme@gnome-shell-extensions.gcampax.github.com.shell-extension.zip -d ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
 rm *.zip
 cp -r ~/unite-shell/unite@hardpixel.eu ~/.local/share/gnome-shell/extensions
 rm -r unite-shell
+killall -SIGQUIT gnome-shell
+
+## add gtk and shell themes ##
+cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker Flat-Remix-GTK/Flat-Remix-Blue-Dark-fullPanel ~/.themes
+gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-GTK-Blue-Darker"
+gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-Blue-Dark-fullPanel"
+rm -r Flat-Remix-GTK flat-remix-gnome
 
 ## update system ##
 sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
