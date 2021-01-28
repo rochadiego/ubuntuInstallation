@@ -1,68 +1,93 @@
 #!/bin/bash
 
-## add repositories ##
-sudo add-apt-repository ppa:papirus/papirus -y
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt update -y
+## update system ##
+sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
 
 ## add dev packages ##
-sudo apt install git curl gdebi build-essential nodejs npm python3-pip -y
-sudo apt install --no-install-recommends yarn -y
+sudo apt install git build-essential nodejs npm python3-pip -y
 
 ## add user packages ##
-sudo apt install vlc virtualbox papirus-icon-theme transmission-gtk cheese gnome-tweaks p7zip-full p7zip-rar rar chrome-gnome-shell -y
+sudo apt install flatpak p7zip-full p7zip-rar rar x11-utils gnome-tweaks -y
+
+## add npm packages ##
+sudo npm i -g vercel
+sudo npm i -g yarn
 
 ## add pip packages ##
 pip3 install virtualenv
 
 ## add snap packages ##
 sudo snap install code --classic
-sudo snap install spotify
+sudo snap install docker
 
-## add external packages ##
+## add flathub repository ##
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+## add flatpak packages ##
+sudo flatpak install flathub org.gnome.Boxes -y
+sudo flatpak install flathub org.gnome.Cheese -y
+sudo flatpak install flathub org.gnome.Totem -y
+sudo flatpak install flathub org.gimp.GIMP -y
+sudo flatpak install flathub com.transmissionbt.Transmission -y
+sudo flatpak install flathub com.discordapp.Discord -y
+sudo flatpak install flathub com.wps.Office -y
+sudo flatpak install flathub com.valvesoftware.Steam -y
+
+## download external packages ##
+wget -qO- 'https://git.io/papirus-icon-theme-install' | DESTDIR="$HOME/.icons" sh
 wget -c 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-wget -c 'https://dl.strem.io/linux/v4.4.106/stremio_4.4.106-1_amd64.deb'
-wget -c 'https://discord.com/api/download?platform=linux&format=deb'
-wget -c 'https://wdl1.pcfg.cache.wpscdn.com/wpsdl/wpsoffice/download/linux/9719/wps-office_11.1.0.9719.XA_amd64.deb'
+wget -c 'https://dl.strem.io/shell-linux/v4.4.120/Stremio+4.4.120.flatpak'
+wget -c 'https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/jobs/1111100/artifacts/download'
+wget -c 'https://cutewallpaper.org/21/cute-box-robot-wallpaper/Amazon-Wallpaper-48-images-on-Genchi.info.jpg'
+git clone 'https://github.com/daniruiz/Flat-Remix-GTK.git'
+git clone 'https://github.com/daniruiz/flat-remix-gnome.git'
+git clone 'https://github.com/hardpixel/unite-shell.git'
+
+## add external deb ##
 for app in $(ls *.deb); do
-    sudo gdebi --option=APT::Get::force-yes="true" --option=APT::Get::Assume-Yes="true" -n $app
+    sudo apt install ./$app -y
     rm $app
 done
 
-## add gnome extensions ##
-firefox https://extensions.gnome.org/extension/1287/unite/
-firefox https://raw.githubusercontent.com/hardpixel/unite-shell/master/settings.png
-firefox https://extensions.gnome.org/extension/19/user-themes/
+## add external flatpak ##
+for app in $(ls *.flatpak); do
+    sudo flatpak install $app -y
+    rm $app
+done
+
+## repair icons ##
+cp /var/lib/flatpak/app/com.stremio.Stremio/current/active/export/share/applications/com.stremio.Stremio.desktop ~/.local/share/applications
+sed -i "s/Icon=com.stremio.Stremio/Icon=stremio/g" ~/.local/share/applications/com.stremio.Stremio.desktop
 
 ## add gtk and shell themes ##
-git clone https://github.com/daniruiz/Flat-Remix-GTK
-git clone https://github.com/daniruiz/flat-remix-gnome
-
-cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker Flat-Remix-GTK/Flat-Remix-Blue-Dark-fullPanel .themes
+cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker Flat-Remix-GTK/Flat-Remix-Blue-Dark-fullPanel ~/.themes
 gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-GTK-Blue-Darker"
 gsettings set org.gnome.shell.extensions.user-theme name "Flat-Remix-Blue-Dark-fullPanel"
+rm -r Flat-Remix-GTK flat-remix-gnome
 
-## set default apps ##
-gio mime x-scheme-handler/magnet transmission-gtk.desktop
-
-## remove packages ##
-sudo apt remove mpv chrome-gnome-shell -y
+## add gnome extensions ##
+unzip -j Extension_bundles.zip zip-files/user-theme@gnome-shell-extensions.gcampax.github.com.shell-extension.zip
+unzip user-theme@gnome-shell-extensions.gcampax.github.com.shell-extension.zip -d ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+rm *.zip
+cp -r ~/unite-shell/unite@hardpixel.eu ~/.local/share/gnome-shell/extensions
+rm -r unite-shell
 
 ## update system ##
-sudo apt update -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
+sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
 
 ## set favorite bar ##
-dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'spotify_spotify.desktop', 'smartcode-stremio.desktop', 'code_code.desktop', 'discord.desktop']"
+dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'com.valvesoftware.Steam.desktop', 'com.stremio.Stremio.desktop', 'com.discordapp.Discord.desktop', 'code_code.desktop']"
 
 ## set wallpaper ##
-wget -c 'https://cutewallpaper.org/21/cute-box-robot-wallpaper/Amazon-Wallpaper-48-images-on-Genchi.info.jpg'
 gsettings get org.gnome.desktop.background picture-uri 'Amazon-Wallpaper-48-images-on-Genchi.info.jpg'
 rm Amazon-Wallpaper-48-images-on-Genchi.info.jpg
 
 ## manual settings ##
 gnome-tweaks
 gnome-control-center
+
+## add gnome extensions ##
+firefox https://raw.githubusercontent.com/hardpixel/unite-shell/master/settings.png
 
 ## done ##
 echo "Done!"
