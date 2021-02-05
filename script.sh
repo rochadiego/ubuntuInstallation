@@ -83,7 +83,7 @@ dconf write /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop', 'goog
 #rm Amazon-Wallpaper-48-images-on-Genchi.info.jpg
 
 ## set gnome extensions ##
-firefox https://raw.githubusercontent.com/hardpixel/unite-shell/master/settings.png &
+firefox https://telegra.ph/setup-unite-02-05 &
 
 ## manual settings ##
 gnome-tweaks
