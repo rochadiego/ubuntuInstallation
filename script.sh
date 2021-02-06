@@ -71,6 +71,7 @@ mkdir ~/.themes
 cp -r flat-remix-gnome/Flat-Remix-Blue-Dark-fullPanel ~/.themes
 cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker ~/.themes
 rm -rf Flat-Remix-GTK flat-remix-gnome
+sudo flatpak override --filesystem=~/.themes
 
 ## update system ##
 sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
