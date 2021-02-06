@@ -7,7 +7,7 @@ sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo ap
 sudo apt install git build-essential nodejs npm python3-pip -y
 
 ## add user packages ##
-sudo apt install flatpak p7zip-full p7zip-rar rar x11-utils gnome-tweaks -y
+sudo apt install flatpak gnome-software-plugin-flatpak p7zip-full p7zip-rar rar x11-utils gnome-tweaks -y
 
 ## add npm packages ##
 sudo npm install --global yarn
@@ -72,6 +72,9 @@ cp -r flat-remix-gnome/Flat-Remix-Blue-Dark-fullPanel ~/.themes
 cp -r Flat-Remix-GTK/Flat-Remix-GTK-Blue-Darker ~/.themes
 rm -rf Flat-Remix-GTK flat-remix-gnome
 sudo flatpak override --filesystem=~/.themes
+
+## remove packages ##
+sudo snap remove snap-store
 
 ## update system ##
 sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y && sudo apt autoclean -y && sudo apt autoremove -y
